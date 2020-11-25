@@ -1,0 +1,22 @@
+// output the value of the summed sequence 1 + 2 + ... + n
+
+main(n) {
+   printint(sum(makelist(n)));
+   printchar(13); printchar(10); // CR-LF
+}
+
+sum(x) {
+   if (isempty(x)) {
+      return 0;
+   } else {
+      return fst(x) + sum(snd(x));
+   }
+}
+
+makelist(n) {
+   if (n < 1) {
+      return empty();
+   } else {
+      return cons(n, makelist(n-1));
+   }
+}

@@ -1,0 +1,11 @@
+// output the square of the input
+
+main(x) {
+   printint square(x);
+   printchar 13; printchar 10;
+}
+
+square(x) {
+   x = x * x;
+   return x;
+}

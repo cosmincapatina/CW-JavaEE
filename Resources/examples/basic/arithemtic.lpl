@@ -1,0 +1,6 @@
+// output 8
+
+main() {
+   printint (1 - (2 + 3)) * ((55 * 2) - 112);
+   printchar 13; printchar 10; // CR-LF
+}

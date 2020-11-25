@@ -1,0 +1,28 @@
+// output n,n-1,...,1
+
+main(n) {
+   showlist(makelist(n));
+   printchar(13); printchar(10); // CR-LF
+}
+
+makelist(n) {
+   if (n < 1) {
+      return empty();
+   } else {
+      return cons(n, makelist(n-1));
+   }
+}
+
+// print the elements of x in order, separated by commas
+// (does nothing if x is empty)
+showlist(x) {
+   if (isempty(x)) {
+   } else {
+     printint fst(x);
+     if (isempty(snd(x))) {
+     } else {
+        printchar(44);
+        showlist(snd(x));
+     }
+   }
+}

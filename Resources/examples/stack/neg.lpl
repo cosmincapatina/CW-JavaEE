@@ -1,0 +1,11 @@
+// for inputs greater than 0, output 0
+// for inputs less than or equal to 0, output 1
+
+neg(x) {
+   if (1 - x) {
+      printint 1;
+   } else {
+      printint 0;
+   }
+   printchar 13; printchar 10; // CR-LF
+}

@@ -1,0 +1,6 @@
+// output -5
+
+main() {
+   printint 1 - (((2 == 3) < (4 + 5)) * 6);
+   printchar 13; printchar 10; // CR-LF
+}

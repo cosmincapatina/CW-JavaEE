@@ -1,0 +1,28 @@
+// output 1 2 3 4 5
+
+// binary trees with integers at the leaves only
+// empty tree: 0
+// leaf containing integer n: cons(0, n)
+// non-empty tree with children t1, t2: cons(t1, t2)
+
+main() {
+   listleaves(
+      cons(cons(cons(0,1),
+                cons(cons(0,2), cons(0,3))
+               ),
+           cons(cons(0,4), cons(0,5))
+          )
+   );
+   printchar 13; printchar 10; // CR-LF
+}
+
+listleaves(t) {
+   if (t == 0) { return 0; } else {}
+   if (fst(t) == 0) {
+      printint snd(t);
+   } else {
+      listleaves(fst(t));
+      printchar 32;
+      listleaves(snd(t));
+   }
+}

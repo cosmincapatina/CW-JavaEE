@@ -1,0 +1,8 @@
+// output 123
+
+main() {
+   printint 1;
+   printint 2;
+   printint 3;
+   printchar 13; printchar 10; // CR-LF
+}

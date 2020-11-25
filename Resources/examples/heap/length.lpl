@@ -1,0 +1,15 @@
+// output 3;
+
+main() {
+   printint(length(cons(0, cons(0, cons (0, empty())))));
+   printchar(13); // CR
+   printchar(10); // LF
+}
+
+length(x) {
+   if (isempty(x)) {
+      return 0;
+   } else {
+      return 1 + length(snd(x));
+   }
+}

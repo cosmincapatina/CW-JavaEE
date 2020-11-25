@@ -1,0 +1,19 @@
+// output 1 2 3 4 5 6 
+
+// binary trees with integers at the nodes only
+// empty tree: 0
+// non-empty tree with children t1, t2 and containing integer n at the top node: cons(n, cons(t1, t2))
+main() {
+   listinorder(
+      cons(3, cons(cons(2, cons(cons(1, cons(0,0)), 0)), cons(5,cons(cons(4, cons(0,0)), cons(6,cons(0,0))))))
+   );
+   printchar 13; printchar 10; // CR-LF
+}
+
+listinorder(t) {
+   if (t == 0) { return 0; } else {}
+   listinorder(fst(snd(t)));
+   printint fst(t);
+   printchar 32;
+   listinorder(snd(snd(t)));
+}

@@ -1,0 +1,86 @@
+   EXP(CALL(NAME main, MEM(BINOP(TEMP FP, SUB, CONST 1))))
+   JUMP(NAME _END)
+LABEL main
+   PROLOGUE(1,0)
+   MOVE(TEMP RV, CONST 0)
+   EXP(CALL(NAME showlist, CALL(NAME reverse, CALL(NAME makelist, MEM(BINOP(TEMP FP, ADD, CONST 2))))))
+   EXP(CALL(NAME _printchar, CONST 13))
+   EXP(CALL(NAME _printchar, CONST 10))
+LABEL main@end@0
+   EPILOGUE(1,0)
+LABEL makelist
+   PROLOGUE(1,0)
+   MOVE(TEMP RV, CONST 0)
+   CJUMP(CONST 0, LT, BINOP(MEM(BINOP(TEMP FP, ADD, CONST 2)), LT, CONST 1), makelist@5, makelist@6)
+LABEL makelist@5
+   MOVE(TEMP RV, CALL(NAME empty))
+   JUMP(NAME makelist@end@1)
+   JUMP(NAME makelist@7)
+LABEL makelist@6
+   MOVE(TEMP RV, CALL(NAME cons, MEM(BINOP(TEMP FP, ADD, CONST 2)), CALL(NAME makelist, BINOP(MEM(BINOP(TEMP FP, ADD, CONST 2)), SUB, CONST 1))))
+   JUMP(NAME makelist@end@1)
+LABEL makelist@7
+LABEL makelist@end@1
+   EPILOGUE(1,0)
+LABEL reverse
+   PROLOGUE(1,0)
+   MOVE(TEMP RV, CONST 0)
+   MOVE(TEMP RV, CALL(NAME revaux, MEM(BINOP(TEMP FP, ADD, CONST 2)), CALL(NAME empty)))
+   JUMP(NAME reverse@end@2)
+LABEL reverse@end@2
+   EPILOGUE(1,0)
+LABEL revaux
+   PROLOGUE(2,0)
+   MOVE(TEMP RV, CONST 0)
+   CJUMP(CONST 0, LT, CALL(NAME isempty, MEM(BINOP(TEMP FP, ADD, CONST 2))), revaux@8, revaux@9)
+LABEL revaux@8
+   MOVE(TEMP RV, MEM(BINOP(TEMP FP, ADD, CONST 3)))
+   JUMP(NAME revaux@end@3)
+   JUMP(NAME revaux@10)
+LABEL revaux@9
+   MOVE(TEMP RV, CALL(NAME revaux, CALL(NAME snd, MEM(BINOP(TEMP FP, ADD, CONST 2))), CALL(NAME cons, CALL(NAME fst, MEM(BINOP(TEMP FP, ADD, CONST 2))), MEM(BINOP(TEMP FP, ADD, CONST 3)))))
+   JUMP(NAME revaux@end@3)
+LABEL revaux@10
+LABEL revaux@end@3
+   EPILOGUE(2,0)
+LABEL showlist
+   PROLOGUE(1,0)
+   MOVE(TEMP RV, CONST 0)
+   CJUMP(CONST 0, LT, CALL(NAME isempty, MEM(BINOP(TEMP FP, ADD, CONST 2))), showlist@11, showlist@12)
+LABEL showlist@11
+   JUMP(NAME showlist@13)
+LABEL showlist@12
+   EXP(CALL(NAME _printint, CALL(NAME fst, MEM(BINOP(TEMP FP, ADD, CONST 2)))))
+   CJUMP(CONST 0, LT, CALL(NAME isempty, CALL(NAME snd, MEM(BINOP(TEMP FP, ADD, CONST 2)))), showlist@14, showlist@15)
+LABEL showlist@14
+   JUMP(NAME showlist@16)
+LABEL showlist@15
+   EXP(CALL(NAME _printchar, CONST 44))
+   EXP(CALL(NAME showlist, CALL(NAME snd, MEM(BINOP(TEMP FP, ADD, CONST 2)))))
+LABEL showlist@16
+LABEL showlist@13
+LABEL showlist@end@4
+   EPILOGUE(1,0)
+LABEL cons
+   PROLOGUE(2,0)
+   MOVE(TEMP SS, CALL(NAME _malloc, CONST 2))
+   MOVE(MEM(TEMP SS), MEM(BINOP(TEMP FP, ADD, CONST 2)))
+   MOVE(MEM(BINOP(TEMP SS, ADD, CONST 1)), MEM(BINOP(TEMP FP, ADD, CONST 3)))
+   MOVE(TEMP RV, TEMP SS)
+   EPILOGUE(2,0)
+LABEL fst
+   PROLOGUE(1,0)
+   MOVE(TEMP RV, MEM(MEM(BINOP(TEMP FP, ADD, CONST 2))))
+   EPILOGUE(1,0)
+LABEL snd
+   PROLOGUE(1,0)
+   MOVE(TEMP RV, MEM(BINOP(MEM(BINOP(TEMP FP, ADD, CONST 2)), ADD, CONST 1)))
+   EPILOGUE(1,0)
+LABEL empty
+   PROLOGUE(0,0)
+   MOVE(TEMP RV, CONST 0)
+   EPILOGUE(0,0)
+LABEL isempty
+   PROLOGUE(1,0)
+   MOVE(TEMP RV, BINOP(MEM(BINOP(TEMP FP, ADD, CONST 2)), EQ, CONST 0))
+   EPILOGUE(1,0)

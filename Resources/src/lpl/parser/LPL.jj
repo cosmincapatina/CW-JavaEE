@@ -1,0 +1,260 @@
+options {
+  STATIC = false;
+}
+
+PARSER_BEGIN(LPLParser)
+  package lpl.parser;
+
+  import lpl.ast.*;
+  import java.util.List;
+  import java.util.LinkedList;
+  public class LPLParser {}
+PARSER_END(LPLParser)
+
+SKIP : /* white-space and comments (do not modify this part) */
+{
+    " "
+  | "\t"
+  | "\n"
+  | "\r"
+  | "\f"
+  | < "//" (~["\n","\r"])* ("\n"|"\r"|"\r\n") >
+  | <"/*" (~["*"])* "*" ("*" | (~["*","/"] (~["*"])* "*"))* "/">
+}
+
+TOKEN : /* Define the LPL tokens here. */
+{
+  < INTEGER_LITERAL: (["0"-"9"])+ >
+| < LPAREN: "(" >
+| < RPAREN: ")" >
+| < LBRACKET: "{" >
+| < RBRACKET: "}" >
+| < COMMA: "," >
+| < SEMICOLON: ";" >
+| < ASSIGN: "=" >
+| < LESS_THAN: "<" >
+| < EQUAL_TO: "==" >
+| < ADD: "+" >
+| < SUB: "-" >
+| < MUL: "*" >
+| < IF: "if" >
+| < ELSE: "else" >
+| < PRINTINT: "printint" >
+| < PRINTCHAR: "printchar" >
+| < RETURN: "return" >
+
+// TODO: add token definitions for the other terminal symbols
+
+// do not change: ID should be the final token definition (after any keywords)
+| < ID: ["a"-"z","A"-"Z"](["a"-"z","A"-"Z","0"-"9","_"])* >
+}
+
+/************************************
+ * The LPL grammar starts here *
+ ************************************/
+
+
+public Program Program() :
+{
+  FunDecl fd;
+  List<FunDecl> fds = new LinkedList<FunDecl>();
+}
+{
+  fd=FunDecl() { fds.add(fd); } (fd=FunDecl() { fds.add(fd); })* <EOF>
+  { return new Program(fds); }
+}
+
+
+// TODO: implement this
+public FunDecl FunDecl() :
+{
+  Token t;
+  IdList idList;
+  Stm stm;
+  List< Stm > stms = new LinkedList< Stm >();
+}
+{
+  t=< ID > < LPAREN > idList=IdList() < RPAREN > < LBRACKET > ( stm=Stm() { stms.add(stm); } )* < RBRACKET >
+  { return new FunDecl(t.image, idList.ids, stms); }
+}
+
+// TODO: implement productions for the other non-terminals
+
+public IdList IdList() :
+{
+  Token t;
+  IdNext idNext;
+  List< String > ids = new LinkedList< String >();
+}
+{
+  (t=< ID > { ids.add(t.image); } ( idNext=IdNext() { ids.add(idNext.id); } )* | { })
+  { return new IdList(ids); }
+}
+
+public IdNext IdNext() :
+{
+  Token t;
+}
+{
+  < COMMA > t=< ID > { return new IdNext(t.image); }
+}
+
+public Stm Stm() :
+{
+  StmFunCall stmFunCall;
+  StmAssign stmAssign;
+  StmReturn stmReturn;
+  StmIfElse stmIfElse;
+  StmPrintint stmPrintint;
+  StmPrintchar stmPrintchar;
+}
+{
+  LOOKAHEAD(2) 
+  stmFunCall=StmFunCall() { return stmFunCall; } |
+  stmAssign=StmAssign() { return stmAssign; } |
+  stmReturn=StmReturn() { return stmReturn; } |
+  stmIfElse=StmIfElse() { return stmIfElse; } |
+  stmPrintint=StmPrintint() { return stmPrintint; } |
+  stmPrintchar=StmPrintchar() { return stmPrintchar; }
+}
+
+public StmAssign StmAssign() :
+{
+  Token t;
+  Exp exp;
+}
+{
+  t=< ID > < ASSIGN > exp=Exp() < SEMICOLON > { return new StmAssign(t.image, exp); }
+}
+
+public StmReturn StmReturn() :
+{
+  Exp exp;
+}
+{
+  < RETURN > exp=Exp() < SEMICOLON > { return new StmReturn(exp); }
+}
+
+public StmIfElse StmIfElse() :
+{
+  Exp exp;
+  Stm stm;
+  List< Stm > ifstms = new LinkedList< Stm >();
+  List< Stm > elsestms = new LinkedList< Stm >();
+}
+{
+  < IF > < LPAREN > exp=Exp() < RPAREN > < LBRACKET > ( stm=Stm() { ifstms.add(stm); } )* < RBRACKET >
+  < ELSE > < LBRACKET > ( stm=Stm() { elsestms.add(stm); } )* < RBRACKET > { return new StmIfElse(exp, ifstms, elsestms); }
+}
+
+public StmPrintint StmPrintint() :
+{
+  Exp exp;
+}
+{
+  < PRINTINT > exp=Exp() < SEMICOLON > { return new StmPrintint(exp); }
+}
+
+public StmPrintchar StmPrintchar() :
+{
+  Exp exp;
+}
+{
+  < PRINTCHAR > exp=Exp() < SEMICOLON > { return new StmPrintchar(exp); }
+}
+
+public StmFunCall StmFunCall() :
+{
+  Token t;
+  ExpList expList;
+}
+{
+  t=< ID > < LPAREN > expList=ExpList() < RPAREN > < SEMICOLON > { return new StmFunCall(t.image, expList.expresses); }
+}
+
+public Exp Exp() :
+{
+  Exp exp1;
+  Exp exp2;
+  Token op;
+}
+{
+  exp1=SimpleExp()
+  (    ( op=< LESS_THAN > | op=< EQUAL_TO > | op=< ADD > | op=< SUB > | op=< MUL > ) exp2=SimpleExp()
+    { return new BinaryOpExp(exp1, exp2, op.image); }
+  |
+  	{ return exp1; }
+  )
+}
+
+public Exp SimpleExp() :
+{
+  ExpFunCall expFunCall;
+  ExpId expId;
+  ExpInteger expInteger;
+  ExpParen expParen;
+}
+{
+  LOOKAHEAD(2)
+  expFunCall=ExpFunCall() { return expFunCall; } |
+  expId=ExpId() { return expId; } |
+  expInteger=ExpInteger() { return expInteger; } |
+  expParen=ExpParen() { return expParen; }
+}
+
+public ExpInteger ExpInteger() :
+{
+  Token t;
+}
+{
+  t=< INTEGER_LITERAL > { return new ExpInteger(Integer.parseInt(t.image)); } 
+}
+
+public ExpId ExpId() :
+{
+  Token t;
+}
+{
+  t=< ID > { return new ExpId(t.image); }
+}
+
+public ExpFunCall ExpFunCall() :
+{
+  Token t;
+  ExpList expList;
+}
+{
+  t=< ID > < LPAREN > expList=ExpList() < RPAREN > { return new ExpFunCall(t.image, expList.expresses); }
+}
+
+public ExpParen ExpParen():
+{
+  Exp exp;
+}
+{
+  < LPAREN > exp=Exp() < RPAREN > { return new ExpParen(exp); } 
+}
+
+public ExpList ExpList() :
+{
+  Exp exp;
+  ExpNext expNext;
+  List< Exp > exps = new LinkedList< Exp >();
+}
+{
+  (    exp=Exp() { exps.add(exp); } ( expNext=ExpNext() { exps.add(expNext.express); } )*
+    |
+    { }
+  )
+  {
+    return new ExpList(exps);
+  }
+}
+
+public ExpNext ExpNext() :
+{
+  Exp exp;
+}
+{
+  < COMMA > exp=Exp() { return new ExpNext(exp); } 
+}

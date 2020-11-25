@@ -1,0 +1,32 @@
+// output 5,4,3,2,1
+
+main() {
+   showlist(append(cons(3, cons(2, cons(1, empty()))), cons(5, cons(4, empty()))));
+   printchar(13); // CR
+   printchar(10); // LF
+}
+
+// print the elements of x in order, separated by commas
+// (does nothing if x is empty)
+showlist(x) {
+   if (isempty(x)) {
+   } else {
+     printint fst(x);
+     if (isempty(snd(x))) {
+     } else {
+        printchar(44);
+        showlist(snd(x));
+     }
+   }
+}
+
+// return the concatenation of l2 and l1
+// (a list which contains, in order, the elements
+// of l2 followed by the elements of l1)
+append(l1, l2) {
+   if (isempty(l2)) {
+      return l1;
+   } else {
+      return cons(fst(l2), append(l1, snd(l2)));
+   }
+}

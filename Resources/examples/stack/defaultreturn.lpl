@@ -1,0 +1,15 @@
+// output 99
+
+main() {
+   bar();
+   printint foo(0 - 1) + 99;
+   printchar 13; printchar 10; // CR-LF
+}
+
+foo(x) {
+   if (0 < x) { return x; } else {}
+}
+
+bar() {
+   return 7;
+}

@@ -1,0 +1,12 @@
+// output: n (n-1) ... 0
+
+main(n) {
+   if (n < 0) {
+      printchar 13; printchar 10; // CR-LF
+   } else {
+      printint n;
+      printchar 32;
+      n = n - 1;
+      main(n);
+   }
+}

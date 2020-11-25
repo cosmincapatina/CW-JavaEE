@@ -1,0 +1,8 @@
+// output the product of the three inputs
+
+main(x,y,z) {
+   y = y * z;
+   x = x * y;
+   printint x;
+   printchar 13; printchar 10; // CR-LF
+}
